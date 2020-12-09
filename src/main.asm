@@ -20,6 +20,8 @@
 .segmentdef PLASMA_CHARS [start=$2000]
 .segmentdef SPRITES [start=$2800]
 .segmentdef PLASMA_TABLES [start=$c000]
+.segmentdef PLASMA_COLORS [start=$c200]
+.segmentdef LOADING_SCREEN [start=$3400]
 .segmentdef LOADER [start=$cc00]
 
 
@@ -56,6 +58,7 @@ start:
 				lda #($c4 + i)
 				sta $0800-$08 + i
 			}	
+			jsr $cc00
 			lda #$ff
 			sta $d015
 			lda #$01
@@ -94,16 +97,6 @@ start:
 			lda #$08
 			sta $d016
 
-			jsr $cc00
-/*
-    ldx #'0'
-    ldy #'1'
-    lda #$10
-    sta $ff
-    lda #$00
-    sta $fe
-    jsr $cf00
-*/
 			sei
 			lda #%00110110	// Disable KERNAL and BASIC ROM and enable cass. motor
 			sta $01
@@ -131,6 +124,34 @@ start:
 this:		
 			jsr runPlasma 
 			jmp this
+
+/*
+draw loading screen
+*/
+
+
+do_load:
+			ldx #$00
+!loop:
+			.for(var i=0;i<4;i++){
+				clc
+				lda loading_overlay+(i*$100),x
+				adc bufA+(i*$100),x
+				sta bufA+(i*$100),x
+			}
+			inx
+			cpx #$00
+			bne !loop-
+
+			ldx filename_a: #'0'
+			ldy filename_b: #'1'
+			lda address_hi: #$10
+			sta $ff
+			lda address_lo: #$00
+			sta $fe
+			jsr $cf00
+			jmp this
+
 //---------------------------------------------------------
 .import source "keyboard_handler.asm"
 .import source "spritefade.asm"
@@ -257,6 +278,16 @@ D_COL7:	.byte $0e
 D_COL8:	.byte $0f
 D_PRESET: .byte $00
 
+plasmaPresets:
+.byte $06, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $0e, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $0f, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $0c, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $05, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+.byte $0d, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+
 
 //Music	$1000-$2000
 //---------------------------------------------------------
@@ -285,7 +316,10 @@ SPR:
 //Plasma Tables $2800-$3000
 //---------------------------------------------------------
 .segment PLASMA_TABLES
-.import source "PlasmaSine.asm"
+.import source "plasma_tables.asm"
+
+.segment PLASMA_COLORS
+.import source "plasma_colors.asm"
 
 //LOADER $CC00
 //---------------------------------------------------------
@@ -293,4 +327,7 @@ SPR:
 .pc=$cc00
 .import c64 "rsrc/realloader.prg"
 
-
+//LOADER SCREEN $3400
+//---------------------------------------------------------
+.segment LOADING_SCREEN
+.import source "loading_screen.asm"
