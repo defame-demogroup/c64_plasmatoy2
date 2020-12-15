@@ -13,6 +13,9 @@
   $be0e-$c014 Keyboard Scan Routine
   $c015-$c250 SPRITE CHAR PLOTTER
 */
+.var offset1 = $4c
+.var offset2 = $4d
+.var offset3 = $4e
 
 .segmentdef BASIC [modify="BasicUpstart", _start=$4000]
 .segmentdef MAIN [start=$4000]
@@ -123,34 +126,74 @@ start:
 			jsr funcDrawSettings
 this:		
 			jsr runPlasma 
+			jsr funcKeys
+			cmp #$00
+			beq this
+!next:		cmp #$01
+			bne !next+
+			jsr funcLoadFile
+!next:
 			jmp this
+
 
 /*
 draw loading screen
 */
-
-
-do_load:
-			ldx #$00
+funcLoadFile:
+	ldx #$00
 !loop:
-			.for(var i=0;i<4;i++){
-				clc
-				lda loading_overlay+(i*$100),x
-				adc bufA+(i*$100),x
-				sta bufA+(i*$100),x
-			}
-			inx
-			cpx #$00
-			bne !loop-
+	.for(var i=0;i<4;i++){
+		clc
+		lda loading_overlay+(i*$100),x
+		adc bufA+(i*$100),x
+		sta bufA+(i*$100),x
+	}
+	inx
+	cpx #$00
+	bne !loop-
+	ldx filename_a: #'0'
+	ldy filename_b: #'1'
+	lda address_hi: #$10
+	sta $ff
+	lda address_lo: #$00
+	sta $fe
+	jsr $cf00
+	rts
 
-			ldx filename_a: #'0'
-			ldy filename_b: #'1'
-			lda address_hi: #$10
-			sta $ff
-			lda address_lo: #$00
-			sta $fe
-			jsr $cf00
-			jmp this
+funcSetPlasmaColor:
+	lda D_COL1
+	sta $d021
+	lda D_COL2
+	sta $d022
+	lda D_COL3
+	sta $d023
+	lda D_COL4
+	sta $d024
+	lda D_COL5
+	.for(var i=0;i<$20;i++){
+		sta plasmaColors.pc1a + i
+		sta plasmaColors.pc1b + i
+	}
+	lda D_COL6
+	.for(var i=0;i<$40;i++){
+		sta plasmaColors.pc2 + i
+	}
+	lda D_COL7
+	.for(var i=0;i<$40;i++){
+		sta plasmaColors.pc3 + i
+	}
+	lda D_COL7
+	.for(var i=0;i<$40;i++){
+		sta plasmaColors.pc4 + i
+	}
+	lda D_ZOOM
+	sta offset1
+	lda D_X
+	sta offset2
+	lda D_Y
+	sta offset3	
+	lda #$00 //return value
+	rts
 
 //---------------------------------------------------------
 .import source "keyboard_handler.asm"
@@ -205,9 +248,7 @@ irq1:
 			jsr funcScrollSpriteNewChar
 			lda #$00
 			sta $d015
-			jsr funcKeys
 			jsr funcFadeSprites
-			jsr funcSetPlasmaColor
 			jsr funcUpdateSpriteChars
 			lda #$00
 			sta $d017
@@ -217,40 +258,6 @@ irq1:
 			tax
 			pla
 			rti
-
-funcSetPlasmaColor:
-	lda D_COL1
-	sta $d021
-	lda D_COL2
-	sta $d022
-	lda D_COL3
-	sta $d023
-	lda D_COL4
-	sta $d024
-	lda D_COL5
-	.for(var i=0;i<$20;i++){
-		sta plasmaColors.pc1a + i
-		sta plasmaColors.pc1b + i
-	}
-	lda D_COL6
-	.for(var i=0;i<$40;i++){
-		sta plasmaColors.pc2 + i
-	}
-	lda D_COL7
-	.for(var i=0;i<$40;i++){
-		sta plasmaColors.pc3 + i
-	}
-	lda D_COL7
-	.for(var i=0;i<$40;i++){
-		sta plasmaColors.pc4 + i
-	}
-	lda D_ZOOM
-	sta offset1
-	lda D_X
-	sta offset2
-	lda D_Y
-	sta offset3	
-	rts
 
 funcUpdateSpriteChars:
 	lda display_timer
@@ -264,6 +271,14 @@ funcUpdateSpriteChars:
 display_timer:
 .byte $00
 
+action_status:
+.byte $00
+/*
+00=nothing
+01=update colors
+02=load from disk
+*/
+
 .pc=* "DATA PAYLOAD"
 D_ZOOM:	.byte $01
 D_X:	.byte $01
@@ -276,17 +291,17 @@ D_COL5:	.byte $0c
 D_COL6:	.byte $0d
 D_COL7:	.byte $0e
 D_COL8:	.byte $0f
-D_PRESET: .byte $00
+D_PRESET_MATH: .byte $00
+D_PRESET_COLORS: .byte $00
 
-plasmaPresets:
-.byte $06, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $0e, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $0f, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $0c, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $05, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-.byte $0d, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+
+MATH_PREFIX:
+.text "0"
+FILENAME:
+.text "0123456789ABCDEF"
+COLOR_PREFIX:
+.text "1"
+
 
 
 //Music	$1000-$2000

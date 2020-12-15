@@ -17,12 +17,7 @@
 .var xReg=$47
 .var yReg=$48
 .var plasmaValues=$49
-
 .var tmpx = $4b
-
-.var offset1 = $4c
-.var offset2 = $4d
-.var offset3 = $4e
 
 toggle: 
 	.byte $00

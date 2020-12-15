@@ -40,6 +40,11 @@ funcKeys:
 	beq !c7+
 	cmp #$38
 	beq !c8+
+	cmp #$2b
+	beq !plus+
+	cmp #$2d
+	beq !minus+
+	rts
 !modifier:
 	cmp #$31
 	beq !c1n+
@@ -88,7 +93,11 @@ NoNewAphanumericKey:
 !c6n:jmp !c6n+
 !c7n:jmp !c7n+
 !c8n:jmp !c8n+
-
+!plus:jmp !plus+
+!minus:jmp !minus+
+/*
+F1/F2 ZOOM
+*/
 !f1:
 	cpy #$10
 	beq !f2+
@@ -105,6 +114,7 @@ NoNewAphanumericKey:
 	lda D_ZOOM
 	jsr funcDrawValue
 	dec display_timer
+	lda #$00
 	rts
 !f2:
 	dec D_ZOOM
@@ -120,7 +130,12 @@ NoNewAphanumericKey:
 	lda D_ZOOM
 	jsr funcDrawValue
 	dec display_timer
+	lda #$00
 	rts
+
+/*
+F3/F4 X-RESOLUTION
+*/
 !f3:
 	cpy #$10
 	beq !f4+
@@ -137,6 +152,7 @@ NoNewAphanumericKey:
 	lda D_X
 	jsr funcDrawValue
 	dec display_timer
+	lda #$00
 	rts
 !f4:
 	dec D_X
@@ -152,7 +168,12 @@ NoNewAphanumericKey:
 	lda D_X
 	jsr funcDrawValue
 	dec display_timer
+	lda #$00
 	rts
+
+/*
+F5/F6 Y-RESOLUTION
+*/
 !f5:
 	cpy #$10
 	beq !f6+
@@ -169,6 +190,7 @@ NoNewAphanumericKey:
 	lda D_Y
 	jsr funcDrawValue
 	dec display_timer
+	lda #$00
 	rts
 !f6:
 	dec D_Y
@@ -184,46 +206,11 @@ NoNewAphanumericKey:
 	lda D_Y
 	jsr funcDrawValue
 	dec display_timer
-	rts
-!f7:
-	cpy #$10
-	beq !f8+
-	inc D_PRESET
-	lda D_PRESET
-	cmp #$10
-	bne !skip+
 	lda #$00
-	sta D_PRESET
-!skip:
-	ldx #<LABELF
-	ldy #>LABELF
-	jsr funcUpdateSettings
-	lda D_PRESET
-	jsr funcDrawValue
-	dec display_timer
-	jmp load_preset
-!f8:
-	dec D_PRESET
-	lda D_PRESET
-	cmp #$ff
-	bne !skip+
-	lda #$0f
-	sta D_PRESET
-!skip:
-	ldx #<LABELF
-	ldy #>LABELF
-	jsr funcUpdateSettings
-	lda D_PRESET
-	jsr funcDrawValue
-	dec display_timer
-load_preset:
-    ldx D_PRESET
-    .for(var i=0;i<8;i++){
-        lda [plasmaPresets + (i*16)],x
-        sta D_COL1 + i
-    }
-    rts
+	rts
 
+
+//----
 !c1:
 	inc D_COL1
 	lda D_COL1
@@ -238,7 +225,7 @@ load_preset:
 	lda D_COL1
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c1n:
 	dec D_COL1
 	lda D_COL1
@@ -253,7 +240,9 @@ load_preset:
 	lda D_COL1
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c2:
 	inc D_COL2
 	lda D_COL2
@@ -268,7 +257,7 @@ load_preset:
 	lda D_COL2
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c2n:
 	dec D_COL2
 	lda D_COL2
@@ -283,7 +272,9 @@ load_preset:
 	lda D_COL2
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c3:
 	inc D_COL3
 	lda D_COL3
@@ -298,7 +289,7 @@ load_preset:
 	lda D_COL3
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c3n:
 	dec D_COL3
 	lda D_COL3
@@ -313,7 +304,9 @@ load_preset:
 	lda D_COL3
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c4:
 	inc D_COL4
 	lda D_COL4
@@ -328,7 +321,7 @@ load_preset:
 	lda D_COL4
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c4n:
 	dec D_COL4
 	lda D_COL4
@@ -343,7 +336,9 @@ load_preset:
 	lda D_COL4
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c5:
 	inc D_COL5
 	lda D_COL5
@@ -358,7 +353,7 @@ load_preset:
 	lda D_COL5
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c5n:
 	dec D_COL5
 	lda D_COL5
@@ -373,7 +368,9 @@ load_preset:
 	lda D_COL5
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c6:
 	inc D_COL6
 	lda D_COL6
@@ -388,7 +385,7 @@ load_preset:
 	lda D_COL6
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c6n:
 	dec D_COL6
 	lda D_COL6
@@ -403,7 +400,9 @@ load_preset:
 	lda D_COL6
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c7:
 	inc D_COL7
 	lda D_COL7
@@ -418,7 +417,7 @@ load_preset:
 	lda D_COL7
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c7n:
 	dec D_COL7
 	lda D_COL7
@@ -433,7 +432,9 @@ load_preset:
 	lda D_COL7
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
+
+//----
 !c8:
 	inc D_COL8
 	lda D_COL8
@@ -448,7 +449,7 @@ load_preset:
 	lda D_COL8
 	jsr funcDrawValue
 	dec display_timer
-	rts
+	jmp funcSetPlasmaColor
 !c8n:
 	dec D_COL8
 	lda D_COL8
@@ -463,6 +464,95 @@ load_preset:
 	lda D_COL8
 	jsr funcDrawValue
 	dec display_timer
+	jmp funcSetPlasmaColor
+
+//----
+!plus:
+	inc D_PRESET_COLORS
+	lda D_PRESET_COLORS
+	cmp #$10
+	bne !skip+
+	lda #$0f
+	sta D_PRESET_COLORS
+!skip:
+	ldx #<LABEL10
+	ldy #>LABEL10
+	jsr funcUpdateSettings
+	lda D_PRESET_COLORS
+	jsr funcDrawValue
+	dec display_timer
+	jmp !load_colors+
+!minus:
+	dec D_PRESET_COLORS
+	lda D_PRESET_COLORS
+	cmp #$ff
+	bne !skip+
+	lda #$00
+	sta D_PRESET_COLORS
+!skip:
+	ldx #<LABEL10
+	ldy #>LABEL10
+	jsr funcUpdateSettings
+	lda D_PRESET_COLORS
+	jsr funcDrawValue
+	dec display_timer
+!load_colors:
+	lda #>plasmaColors
+	sta address_hi
+	lda #<plasmaColors
+	sta address_lo
+	lda COLOR_PREFIX
+	sta filename_a
+	ldx D_PRESET_COLORS
+	lda FILENAME,x
+	sta filename_b
+	lda #$01 //TODO: set loading flag
+	rts
+/*
+F7/F8 PRESET LOADING
+*/
+!f7:
+	cpy #$10
+	beq !f8+
+	inc D_PRESET_MATH
+	lda D_PRESET_MATH
+	cmp #$10
+	bne !skip+
+	lda #$00
+	sta D_PRESET_MATH
+!skip:
+	ldx #<LABELF
+	ldy #>LABELF
+	jsr funcUpdateSettings
+	lda D_PRESET_MATH
+	jsr funcDrawValue
+	dec display_timer
+	jmp load_preset
+!f8:
+	dec D_PRESET_MATH
+	lda D_PRESET_MATH
+	cmp #$ff
+	bne !skip+
+	lda #$0f
+	sta D_PRESET_MATH
+!skip:
+	ldx #<LABELF
+	ldy #>LABELF
+	jsr funcUpdateSettings
+	lda D_PRESET_MATH
+	jsr funcDrawValue
+	dec display_timer
+load_preset:
+	lda #>plasmaSine
+	sta address_hi
+	lda #<plasmaSine
+	sta address_lo
+	lda MATH_PREFIX
+	sta filename_a
+	ldx D_PRESET_MATH
+	lda FILENAME,x
+	sta filename_b
+	lda #$01 //return value
 	rts
 
 LAST_EVENT:
