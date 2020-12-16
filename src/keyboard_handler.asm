@@ -506,7 +506,7 @@ F5/F6 Y-RESOLUTION
 	ldx D_PRESET_COLORS
 	lda FILENAME,x
 	sta filename_b
-	lda #$01 //TODO: set loading flag
+	lda #$02 //set loading flag with color update
 	rts
 /*
 F7/F8 PRESET LOADING
@@ -552,7 +552,7 @@ load_preset:
 	ldx D_PRESET_MATH
 	lda FILENAME,x
 	sta filename_b
-	lda #$01 //return value
+	lda #$01 //set pure loading flag 
 	rts
 
 LAST_EVENT:

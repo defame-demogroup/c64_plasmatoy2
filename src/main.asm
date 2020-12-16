@@ -48,6 +48,30 @@ ZEROPAGE
 .var mapA = %00011000
 .var music = LoadSid("rsrc/Run-Mild.sid")
 
+//todo: shrink this!
+.macro shadow_zp(){
+	ldx #$f0
+!loop:
+	lda $00,x
+	sta $2a00,x
+	lda $2b00,x
+	sta $00,x
+	inx
+	cpx #$00
+	bne !loop-
+}
+
+.macro unshadow_zp(){
+	ldx #$f0
+!loop:
+	lda $00,x
+	sta $2b00,x
+	lda $2a00,x
+	sta $00,x
+	inx
+	cpx #$00
+	bne !loop-
+}
 
 .segment BASIC
 .pc =$0801 "Basic Upstart Program"
@@ -104,10 +128,12 @@ start:
 			lda #%00110110	// Disable KERNAL and BASIC ROM and enable cass. motor
 			sta $01
 			jsr initPlasma
+			shadow_zp()
 			ldx #$00
 			ldy #$00
 			lda #$00
-			jsr music.init	
+			jsr music.init
+			unshadow_zp()
 			//bank selection
 			lda #$f0
 			sta $d012
@@ -132,7 +158,12 @@ this:
 !next:		cmp #$01
 			bne !next+
 			jsr funcLoadFile
-!next:
+			jmp this
+!next:		cmp #$02
+			bne !next+
+			jsr funcLoadFile
+			jsr funcPostLoadPlasmaColor
+!next:		
 			jmp this
 
 
@@ -143,14 +174,18 @@ funcLoadFile:
 	ldx #$00
 !loop:
 	.for(var i=0;i<4;i++){
-		clc
-		lda loading_overlay+(i*$100),x
-		adc bufA+(i*$100),x
+		sec
+		lda bufA+(i*$100),x
+		adc loading_overlay+(i*$100),x
 		sta bufA+(i*$100),x
 	}
 	inx
 	cpx #$00
 	bne !loop-
+	.for(var i=0;i<8;i++){
+		lda #($c4 + i)
+		sta $0800-$08 + i
+	}
 	ldx filename_a: #'0'
 	ldy filename_b: #'1'
 	lda address_hi: #$10
@@ -158,6 +193,21 @@ funcLoadFile:
 	lda address_lo: #$00
 	sta $fe
 	jsr $cf00
+	rts
+
+funcPostLoadPlasmaColor:
+	lda plasmaColors.bg1
+	sta D_COL1
+	sta $d021
+	lda plasmaColors.bg2
+	sta D_COL2
+	sta $d022
+	lda plasmaColors.bg3
+	sta D_COL3
+	sta $d023
+	lda plasmaColors.bg4
+	sta D_COL4
+	sta $d024
 	rts
 
 funcSetPlasmaColor:
@@ -244,7 +294,12 @@ irq1:
 			sta $d02c
 			sta $d02d
 			sta $d02e
+			ldx #$00
+			//todo: shadow zp for music
+			shadow_zp()
 			jsr music.play
+			unshadow_zp()
+			//todo: unshadow zp for music
 			jsr funcScrollSpriteNewChar
 			lda #$00
 			sta $d015

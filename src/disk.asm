@@ -1,7 +1,7 @@
 .disk [filename="../plasmatoy2.d64", name="PLASMATOY V2", id="2021!" ] 
 {
     [name="----------------", type="del<"                            ],
-    [name="  PLASMA-TOY 2  ", type="prg<", segments="BASIC, MAIN, MUSIC, PLASMA_CHARS, SPRITES, PLASMA_TABLES, LOADER" ],
+    [name="  PLASMA-TOY 2  ", type="prg<", segments="BASIC, MAIN, MUSIC, PLASMA_CHARS, SPRITES, PLASMA_TABLES, LOADER, LOADING_SCREEN" ],
     [name="----------------", type="del<"                            ],
     [name="00", type="prg<", segments="PLASMA_TABLES" ],
     [name="01", type="prg<", segments="PLASMA_TABLES1" ],
