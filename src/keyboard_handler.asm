@@ -40,10 +40,19 @@ funcKeys:
 	beq !c7+
 	cmp #$38
 	beq !c8+
-	cmp #$2b
-	beq !plus+
-	cmp #$2d
-	beq !minus+
+	clc
+	cmp #$01
+	bcs !in_range+
+	rts
+!in_range:
+	clc
+	cmp #$1b
+	bcc !in_range+
+	rts
+!in_range:
+	jmp !load_preset+
+
+
 	rts
 !modifier:
 	cmp #$31
@@ -70,13 +79,10 @@ NoNewAphanumericKey:
 	beq !f3+
 	cpx #$40
 	beq !f5+
-	cpx #$08
-	beq !f7+
 	rts
 !f1:jmp !f1+
 !f3:jmp !f3+
 !f5:jmp !f5+
-!f7:jmp !f7+
 !c1:jmp !c1+
 !c2:jmp !c2+
 !c3:jmp !c3+
@@ -93,8 +99,7 @@ NoNewAphanumericKey:
 !c6n:jmp !c6n+
 !c7n:jmp !c7n+
 !c8n:jmp !c8n+
-!plus:jmp !plus+
-!minus:jmp !minus+
+
 /*
 F1/F2 ZOOM
 */
@@ -467,92 +472,23 @@ F5/F6 Y-RESOLUTION
 	jmp funcSetPlasmaColor
 
 //----
-!plus:
-	inc D_PRESET_COLORS
-	lda D_PRESET_COLORS
-	cmp #$10
-	bne !skip+
-	lda #$0f
-	sta D_PRESET_COLORS
-!skip:
-	ldx #<LABEL10
-	ldy #>LABEL10
-	jsr funcUpdateSettings
-	lda D_PRESET_COLORS
-	jsr funcDrawValue
-	dec display_timer
-	jmp !load_colors+
-!minus:
-	dec D_PRESET_COLORS
-	lda D_PRESET_COLORS
-	cmp #$ff
-	bne !skip+
-	lda #$00
-	sta D_PRESET_COLORS
-!skip:
-	ldx #<LABEL10
-	ldy #>LABEL10
-	jsr funcUpdateSettings
-	lda D_PRESET_COLORS
-	jsr funcDrawValue
-	dec display_timer
-!load_colors:
-	lda #>plasmaColors
-	sta address_hi
-	lda #<plasmaColors
-	sta address_lo
-	lda COLOR_PREFIX
+!load_preset:
 	sta filename_a
-	ldx D_PRESET_COLORS
-	lda FILENAME,x
 	sta filename_b
-	lda #$02 //set loading flag with color update
-	rts
-/*
-F7/F8 PRESET LOADING
-*/
-!f7:
-	cpy #$10
-	beq !f8+
-	inc D_PRESET_MATH
-	lda D_PRESET_MATH
-	cmp #$10
-	bne !skip+
-	lda #$00
-	sta D_PRESET_MATH
-!skip:
+	sta tmp_val
 	ldx #<LABELF
 	ldy #>LABELF
 	jsr funcUpdateSettings
-	lda D_PRESET_MATH
-	jsr funcDrawValue
+	lda tmp_val: #$00
+	ldx #$02
+	ldy #$01
+	jsr funcDrawCharOnSprite
 	dec display_timer
-	jmp load_preset
-!f8:
-	dec D_PRESET_MATH
-	lda D_PRESET_MATH
-	cmp #$ff
-	bne !skip+
-	lda #$0f
-	sta D_PRESET_MATH
-!skip:
-	ldx #<LABELF
-	ldy #>LABELF
-	jsr funcUpdateSettings
-	lda D_PRESET_MATH
-	jsr funcDrawValue
-	dec display_timer
-load_preset:
 	lda #>plasmaSine
 	sta address_hi
 	lda #<plasmaSine
 	sta address_lo
-	lda MATH_PREFIX
-	sta filename_a
-	ldx D_PRESET_MATH
-	lda FILENAME,x
-	sta filename_b
-	lda #$01 //set pure loading flag 
+	lda #$02 //set pure loading flag 
 	rts
 
 LAST_EVENT:

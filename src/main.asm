@@ -22,8 +22,7 @@
 .segmentdef MUSIC [start=$1000]
 .segmentdef PLASMA_CHARS [start=$2000]
 .segmentdef SPRITES [start=$2800]
-.segmentdef PLASMA_TABLES [start=$c000]
-.segmentdef PLASMA_COLORS [start=$c200]
+.segmentdef PLASMA_DATA [start=$c000]
 .segmentdef LOADING_SCREEN [start=$3400]
 .segmentdef LOADER [start=$cc00]
 
@@ -179,13 +178,30 @@ funcLoadFile:
 		adc loading_overlay+(i*$100),x
 		sta bufA+(i*$100),x
 	}
-	inx
-	cpx #$00
-	bne !loop-
 	.for(var i=0;i<8;i++){
 		lda #($c4 + i)
 		sta $0800-$08 + i
 	}
+	ldy #$00
+!bloop:
+	iny
+	nop
+	bne !bloop-
+
+	inx
+	inx
+	inx
+	inx
+	inx
+	inx
+	inx
+	inx
+	inx
+
+	cpx #$00
+
+	bne !loop-
+
 	ldx filename_a: #'0'
 	ldy filename_b: #'1'
 	lda address_hi: #$10
@@ -304,7 +320,6 @@ irq1:
 			lda #$00
 			sta $d015
 			jsr funcFadeSprites
-			jsr funcUpdateSpriteChars
 			lda #$00
 			sta $d017
 			pla
@@ -313,15 +328,6 @@ irq1:
 			tax
 			pla
 			rti
-
-funcUpdateSpriteChars:
-	lda display_timer
-	beq !skip+
-	dec display_timer
-	bne !skip+
-	jsr funcResetSettings
-!skip:
-	rts
 
 display_timer:
 .byte $00
@@ -346,16 +352,6 @@ D_COL5:	.byte $0c
 D_COL6:	.byte $0d
 D_COL7:	.byte $0e
 D_COL8:	.byte $0f
-D_PRESET_MATH: .byte $00
-D_PRESET_COLORS: .byte $00
-
-
-MATH_PREFIX:
-.text "0"
-FILENAME:
-.text "0123456789ABCDEF"
-COLOR_PREFIX:
-.text "1"
 
 
 
@@ -385,11 +381,8 @@ SPR:
 
 //Plasma Tables $2800-$3000
 //---------------------------------------------------------
-.segment PLASMA_TABLES
+.segment PLASMA_DATA
 .import source "plasma_tables.asm"
-
-.segment PLASMA_COLORS
-.import source "plasma_colors.asm"
 
 //LOADER $CC00
 //---------------------------------------------------------
