@@ -32,53 +32,58 @@
 	}
 }
 
-.macro render_plasma_tables(sin_amp, sin_freq, cos_amp, cos_freq){
-    plasmaSine:
-    {
-        .var amplitude = sin_amp
-        .var frequency = sin_freq
-        table:
-        .for (var j=0; j<256;j++) { 	
-            .if (round(amplitude+amplitude * sin(toRadians( 360/frequency * j))) > 255) {
-                .byte 255
-            } else {
-                .byte amplitude+amplitude * sin(toRadians( 360/frequency * j))		
-            }	
+/*
+mix a + mix b = 2, so to reduce one, increase the other 
+*/
+.macro render_plasma_data(x_amp, y_amp, xa_freq,  xb_freq, ya_freq, yb_freq){
+//, col1, col2, col3, col4, col5, col6, col7, col8){
+    .align $100
+    .for (var j=0; j<256;j++) {
+        .var d = 128 * x_amp
+        .var a = 1
+        .var b = 1
+        .if(xa_freq > 0){
+            .eval a = sin(toRadians( 360/(256/xa_freq) * j))
         }
-    }  
-
-    plasmaCos:
-    {
-        .var amplitude = cos_amp
-        .var frequency = cos_freq
-        table:
-        .for (var j=0; j<256;j++) { 	
-            .if (round(amplitude+amplitude * cos(toRadians( 360/frequency * j))) > 255) {
-                .byte 255
-            } else {
-                .byte amplitude+amplitude * cos(toRadians( 360/frequency * j))
-            }	
+        .if(xb_freq > 0){
+            .eval b = cos(toRadians( 360/(256/xb_freq) * j))
         }
+        .var c = d + (d * a * b)
+        .if(c > 255){
+            .eval c = 255
+        }
+        .byte c
     }
-}
 
-.macro render_plasma_colors(col1, col2, col3, col4, col5, col6, col7, col8){
-		pc1a:
-			.fill $20, col1
-		pc2:
-			.fill $40, col2
-		pc3:
-			.fill $40, col3
-		pc4:
-			.fill $40, col4
-		pc1b:
-			.fill $20, col1
-		bg1:
-			.byte col5
-		bg2:
-			.byte col6
-		bg3:
-			.byte col7
-		bg4:
-			.byte col8
+    .align $100
+    .for (var j=0; j<256;j++) {
+        .var d = 128 * y_amp
+        .var a = 1
+        .var b = 1
+        .if(ya_freq > 0){
+            .eval a = sin(toRadians( 360/(256/ya_freq) * j))
+        }
+        .if(yb_freq > 0){
+            .eval b = cos(toRadians( 360/(256/yb_freq) * j))
+        }
+        .var c = d + (d * a * b)
+        .if(c > 255){
+            .eval c = 255
+        }
+        .byte c
+    }
+    // .align $100
+    // .fill $20, col1
+    // .fill $40, col2
+    // .fill $40, col3
+    // .fill $40, col4
+    // .fill $20, col1
+    // .byte col1
+    // .byte col2
+    // .byte col3
+    // .byte col4
+    // .byte col5
+    // .byte col6
+    // .byte col7
+    // .byte col8
 }

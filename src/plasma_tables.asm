@@ -1,53 +1,40 @@
+.align $100
 plasmaSine:
-{
-    .var amplitude = 46
-    .var frequency = 256
-    table:
-    .for (var j=0; j<256;j++) {
-        .var o = amplitude+amplitude * sin(toRadians( 360/frequency * j))
-        .if (o > 255) {
-            .eval o = 255
-        }
-        .byte o
-    }
-}  
+.fill $100, $20
 
+.align $100
 plasmaCos:
-{
-    .var amplitude = 34
-    .var frequency = 128
-    table:
-    .for (var j=0; j<256;j++) {
-        .var o = amplitude+amplitude * cos(toRadians( 360/frequency * j))
-        .if (o > 255) {
-            .eval o = 255
-        }
-        .byte o		
-    }
-}
+.fill $100, $20
 
+.align $100
 plasmaColors:
 {
 pc1a:
-	.fill $20, $0f
+	.fill $20, $02
 pc2:
-	.fill $20, $06
-	.fill $20, $06
+	.fill $40, $03
 pc3:
-	.fill $20, $0e
-	.fill $20, $0e
+	.fill $40, $04
 pc4:
-	.fill $20, $04
-	.fill $20, $04
+	.fill $40, $05
 pc1b:
-	.fill $20, $0f
-bg1:
-	.byte $0a
-bg2:
-	.byte $0b
-bg3:
-	.byte $0c
-bg4:
-	.byte $0d
-}
+	.fill $20, $06
 
+D_COL1:
+.byte $02
+D_COL2:
+.byte $03
+D_COL3:
+.byte $04
+D_COL4:
+.byte $05
+D_COL5:
+.byte $06
+D_COL6:
+.byte $07
+D_COL7:
+.byte $08
+D_COL8:
+.byte $09
+
+}

@@ -22,8 +22,6 @@ funcKeys:
 	sta LAST_EVENT + 2
 	cmp #$ff
 	beq NoNewAphanumericKey
-	cpy #$00
-	bne !modifier+
 	cmp #$31
 	beq !c1+
 	cmp #$32
@@ -51,26 +49,6 @@ funcKeys:
 	rts
 !in_range:
 	jmp !load_preset+
-
-
-	rts
-!modifier:
-	cmp #$31
-	beq !c1n+
-	cmp #$32
-	beq !c2n+
-	cmp #$33
-	beq !c3n+
-	cmp #$34
-	beq !c4n+
-	cmp #$35
-	beq !c5n+
-	cmp #$36
-	beq !c6n+
-	cmp #$37
-	beq !c7n+
-	cmp #$38
-	beq !c8n+
 	rts
 NoNewAphanumericKey:
 	cpx #$10
@@ -91,18 +69,14 @@ NoNewAphanumericKey:
 !c6:jmp !c6+
 !c7:jmp !c7+
 !c8:jmp !c8+
-!c1n:jmp !c1n+
-!c2n:jmp !c2n+
-!c3n:jmp !c3n+
-!c4n:jmp !c4n+
-!c5n:jmp !c5n+
-!c6n:jmp !c6n+
-!c7n:jmp !c7n+
-!c8n:jmp !c8n+
 
 /*
 F1/F2 ZOOM
 */
+.var D_ZOOM = offset1
+.var D_X = offset2
+.var D_Y = offset3	
+
 !f1:
 	cpy #$10
 	beq !f2+
@@ -217,265 +191,147 @@ F5/F6 Y-RESOLUTION
 
 //----
 !c1:
-	inc D_COL1
-	lda D_COL1
+	inc plasmaColors.D_COL1
+	lda plasmaColors.D_COL1
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL1
-!skip:
-	ldx #<LABEL7
-	ldy #>LABEL7
-	jsr funcUpdateSettings
-	lda D_COL1
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c1n:
-	dec D_COL1
-	lda D_COL1
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL1
+	sta plasmaColors.D_COL1
 !skip:
 	ldx #<LABEL7
 	ldy #>LABEL7
 	jsr funcUpdateSettings
-	lda D_COL1
+	lda plasmaColors.D_COL1
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c2:
-	inc D_COL2
-	lda D_COL2
+	inc plasmaColors.D_COL2
+	lda plasmaColors.D_COL2
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL2
-!skip:
-	ldx #<LABEL8
-	ldy #>LABEL8
-	jsr funcUpdateSettings
-	lda D_COL2
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c2n:
-	dec D_COL2
-	lda D_COL2
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL2
+	sta plasmaColors.D_COL2
 !skip:
 	ldx #<LABEL8
 	ldy #>LABEL8
 	jsr funcUpdateSettings
-	lda D_COL2
+	lda plasmaColors.D_COL2
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c3:
-	inc D_COL3
-	lda D_COL3
+	inc plasmaColors.D_COL3
+	lda plasmaColors.D_COL3
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL3
-!skip:
-	ldx #<LABEL9
-	ldy #>LABEL9
-	jsr funcUpdateSettings
-	lda D_COL3
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c3n:
-	dec D_COL3
-	lda D_COL3
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL3
+	sta plasmaColors.D_COL3
 !skip:
 	ldx #<LABEL9
 	ldy #>LABEL9
 	jsr funcUpdateSettings
-	lda D_COL3
+	lda plasmaColors.D_COL3
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c4:
-	inc D_COL4
-	lda D_COL4
+	inc plasmaColors.D_COL4
+	lda plasmaColors.D_COL4
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL4
-!skip:
-	ldx #<LABELA
-	ldy #>LABELA
-	jsr funcUpdateSettings
-	lda D_COL4
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c4n:
-	dec D_COL4
-	lda D_COL4
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL4
+	sta plasmaColors.D_COL4
 !skip:
 	ldx #<LABELA
 	ldy #>LABELA
 	jsr funcUpdateSettings
-	lda D_COL4
+	lda plasmaColors.D_COL4
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c5:
-	inc D_COL5
-	lda D_COL5
+	inc plasmaColors.D_COL5
+	lda plasmaColors.D_COL5
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL5
-!skip:
-	ldx #<LABELB
-	ldy #>LABELB
-	jsr funcUpdateSettings
-	lda D_COL5
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c5n:
-	dec D_COL5
-	lda D_COL5
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL5
+	sta plasmaColors.D_COL5
 !skip:
 	ldx #<LABELB
 	ldy #>LABELB
 	jsr funcUpdateSettings
-	lda D_COL5
+	lda plasmaColors.D_COL5
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c6:
-	inc D_COL6
-	lda D_COL6
+	inc plasmaColors.D_COL6
+	lda plasmaColors.D_COL6
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL6
-!skip:
-	ldx #<LABELC
-	ldy #>LABELC
-	jsr funcUpdateSettings
-	lda D_COL6
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c6n:
-	dec D_COL6
-	lda D_COL6
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL6
+	sta plasmaColors.D_COL6
 !skip:
 	ldx #<LABELC
 	ldy #>LABELC
 	jsr funcUpdateSettings
-	lda D_COL6
+	lda plasmaColors.D_COL6
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c7:
-	inc D_COL7
-	lda D_COL7
+	inc plasmaColors.D_COL7
+	lda plasmaColors.D_COL7
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL7
-!skip:
-	ldx #<LABELD
-	ldy #>LABELD
-	jsr funcUpdateSettings
-	lda D_COL7
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c7n:
-	dec D_COL7
-	lda D_COL7
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL7
+	sta plasmaColors.D_COL7
 !skip:
 	ldx #<LABELD
 	ldy #>LABELD
 	jsr funcUpdateSettings
-	lda D_COL7
+	lda plasmaColors.D_COL7
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !c8:
-	inc D_COL8
-	lda D_COL8
+	inc plasmaColors.D_COL8
+	lda plasmaColors.D_COL8
 	cmp #$10
 	bne !skip+
-	lda #$0f
-	sta D_COL8
-!skip:
-	ldx #<LABELE
-	ldy #>LABELE
-	jsr funcUpdateSettings
-	lda D_COL8
-	jsr funcDrawValue
-	dec display_timer
-	jmp funcSetPlasmaColor
-!c8n:
-	dec D_COL8
-	lda D_COL8
-	cmp #$ff
-	bne !skip+
 	lda #$00
-	sta D_COL8
+	sta plasmaColors.D_COL8
 !skip:
 	ldx #<LABELE
 	ldy #>LABELE
 	jsr funcUpdateSettings
-	lda D_COL8
+	lda plasmaColors.D_COL8
 	jsr funcDrawValue
 	dec display_timer
 	jmp funcSetPlasmaColor
 
 //----
 !load_preset:
+	sta tmp_val
+	clc
+	adc #$40
 	sta filename_a
 	sta filename_b
-	sta tmp_val
 	ldx #<LABELF
 	ldy #>LABELF
 	jsr funcUpdateSettings

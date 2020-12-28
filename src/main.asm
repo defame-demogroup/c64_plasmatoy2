@@ -29,6 +29,12 @@
 
 
 .import source "macros.asm"
+//Plasma Tables $2800-$3000
+//---------------------------------------------------------
+.segment PLASMA_DATA
+.import source "plasma_tables.asm"
+
+
 
 /*
 Parameters
@@ -149,19 +155,26 @@ start:
 			sta $dc0d
 			cli
 			jsr funcDrawSettings
+			jsr funcSetPlasmaColor
+			jsr runPlasma
+			lda #$01
+			clc
+			adc #$40
+			sta filename_a
+			sta filename_b
+			lda #>plasmaSine
+			sta address_hi
+			lda #<plasmaSine
+			sta address_lo
+			jsr funcLoadFile
+			jsr funcSetPlasmaColor
 this:		
 			jsr runPlasma 
 			jsr funcKeys
-			cmp #$00
-			beq this
-!next:		cmp #$01
-			bne !next+
+			cmp #$02
+			bne this
 			jsr funcLoadFile
-			jmp this
-!next:		cmp #$02
-			bne !next+
-			jsr funcLoadFile
-			jsr funcPostLoadPlasmaColor
+			jsr funcSetPlasmaColor
 !next:		
 			jmp this
 
@@ -187,7 +200,6 @@ funcLoadFile:
 	iny
 	nop
 	bne !bloop-
-
 	inx
 	inx
 	inx
@@ -197,11 +209,8 @@ funcLoadFile:
 	inx
 	inx
 	inx
-
 	cpx #$00
-
 	bne !loop-
-
 	ldx filename_a: #'0'
 	ldy filename_b: #'1'
 	lda address_hi: #$10
@@ -212,52 +221,42 @@ funcLoadFile:
 	rts
 
 funcPostLoadPlasmaColor:
-	lda plasmaColors.bg1
-	sta D_COL1
+	lda plasmaColors.D_COL1
 	sta $d021
-	lda plasmaColors.bg2
-	sta D_COL2
+	lda plasmaColors.D_COL2
 	sta $d022
-	lda plasmaColors.bg3
-	sta D_COL3
+	lda plasmaColors.D_COL3
 	sta $d023
-	lda plasmaColors.bg4
-	sta D_COL4
+	lda plasmaColors.D_COL4
 	sta $d024
 	rts
 
 funcSetPlasmaColor:
-	lda D_COL1
+	lda plasmaColors.D_COL1
 	sta $d021
-	lda D_COL2
+	lda plasmaColors.D_COL2
 	sta $d022
-	lda D_COL3
+	lda plasmaColors.D_COL3
 	sta $d023
-	lda D_COL4
+	lda plasmaColors.D_COL4
 	sta $d024
-	lda D_COL5
+	lda plasmaColors.D_COL5
 	.for(var i=0;i<$20;i++){
 		sta plasmaColors.pc1a + i
 		sta plasmaColors.pc1b + i
 	}
-	lda D_COL6
+	lda plasmaColors.D_COL6
 	.for(var i=0;i<$40;i++){
 		sta plasmaColors.pc2 + i
 	}
-	lda D_COL7
+	lda plasmaColors.D_COL7
 	.for(var i=0;i<$40;i++){
 		sta plasmaColors.pc3 + i
 	}
-	lda D_COL7
+	lda plasmaColors.D_COL7
 	.for(var i=0;i<$40;i++){
 		sta plasmaColors.pc4 + i
 	}
-	lda D_ZOOM
-	sta offset1
-	lda D_X
-	sta offset2
-	lda D_Y
-	sta offset3	
 	lda #$00 //return value
 	rts
 
@@ -332,28 +331,6 @@ irq1:
 display_timer:
 .byte $00
 
-action_status:
-.byte $00
-/*
-00=nothing
-01=update colors
-02=load from disk
-*/
-
-.pc=* "DATA PAYLOAD"
-D_ZOOM:	.byte $01
-D_X:	.byte $01
-D_Y:	.byte $01
-D_COL1:	.byte $08
-D_COL2:	.byte $09
-D_COL3:	.byte $0a
-D_COL4:	.byte $0b
-D_COL5:	.byte $0c
-D_COL6:	.byte $0d
-D_COL7:	.byte $0e
-D_COL8:	.byte $0f
-
-
 
 //Music	$1000-$2000
 //---------------------------------------------------------
@@ -378,11 +355,6 @@ SPRFONT:
 .pc=$3100 "SPRITES"
 SPR:
 .fill $40 * 8, $00
-
-//Plasma Tables $2800-$3000
-//---------------------------------------------------------
-.segment PLASMA_DATA
-.import source "plasma_tables.asm"
 
 //LOADER $CC00
 //---------------------------------------------------------

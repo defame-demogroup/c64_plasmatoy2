@@ -5,58 +5,87 @@
     [name="----------------", type="del<"                            ],
     [name="AA", type="prg<", segments="PLASMA_DATA_AA" ],
     [name="BB", type="prg<", segments="PLASMA_DATA_BB" ],
-    [name="CC", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="DD", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="EE", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="FF", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="GG", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="HH", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="II", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="JJ", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="KK", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="LL", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="MM", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="NN", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="OO", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="PP", type="prg<", segments="PLASMA_DATA_AA" ],
-    [name="QQ", type="prg<", segments="PLASMA_DATA_AA" ],
+    [name="CC", type="prg<", segments="PLASMA_DATA_CC" ],
+    [name="DD", type="prg<", segments="PLASMA_DATA_DD" ],
+    [name="EE", type="prg<", segments="PLASMA_DATA_EE" ],
+    [name="FF", type="prg<", segments="PLASMA_DATA_FF" ],
+    [name="GG", type="prg<", segments="PLASMA_DATA_GG" ],
+    [name="HH", type="prg<", segments="PLASMA_DATA_HH" ],
+    [name="II", type="prg<", segments="PLASMA_DATA_II" ],
+    [name="JJ", type="prg<", segments="PLASMA_DATA_JJ" ],
+    [name="KK", type="prg<", segments="PLASMA_DATA_KK" ],
+    [name="LL", type="prg<", segments="PLASMA_DATA_LL" ],
+    [name="MM", type="prg<", segments="PLASMA_DATA_MM" ],
+    [name="NN", type="prg<", segments="PLASMA_DATA_NN" ],
+    [name="OO", type="prg<", segments="PLASMA_DATA_OO" ],
+    [name="PP", type="prg<", segments="PLASMA_DATA_PP" ],
+    [name="QQ", type="prg<", segments="PLASMA_DATA_QQ" ],
+    [name="RR", type="prg<", segments="PLASMA_DATA_RR" ],
+    [name="SS", type="prg<", segments="PLASMA_DATA_SS" ],
+    [name="TT", type="prg<", segments="PLASMA_DATA_TT" ],
+    [name="UU", type="prg<", segments="PLASMA_DATA_UU" ],
+    [name="VV", type="prg<", segments="PLASMA_DATA_VV" ],
+    [name="WW", type="prg<", segments="PLASMA_DATA_WW" ],
+    [name="XX", type="prg<", segments="PLASMA_DATA_XX" ],
+    [name="YY", type="prg<", segments="PLASMA_DATA_YY" ],
+    [name="ZZ", type="prg<", segments="PLASMA_DATA_ZZ" ],
     [name="----------------", type="del<"],
     [name=">DEFAME IN 2020<", type="del<"],
     [name="----------------", type="del<"]
 }
 .import source "main.asm"
-.import source "plasma_data_aa.asm"
-.import source "plasma_data_bb.asm"
+//render_plasma_data(x_amp, y_amp, xa_freq,  xb_freq, ya_freq, yb_freq)
+.segment PLASMA_DATA_AA [start=$c000]
+render_plasma_data(0.25,0.25,1,0,0,1)
+.segment PLASMA_DATA_BB [start=$c000]
+render_plasma_data(0.5,0.25,1,1,0,1)
+.segment PLASMA_DATA_CC [start=$c000]
+render_plasma_data(0.5,0.5,1,2,0,1)
+.segment PLASMA_DATA_DD [start=$c000]
+render_plasma_data(0.25,0.25,1,3,6,1) 
+.segment PLASMA_DATA_EE [start=$c000]
+render_plasma_data(0.25,0.5,1,2,2,1) 
+.segment PLASMA_DATA_FF [start=$c000]
+render_plasma_data(0.5,0.5,1,1,1,1) 
+.segment PLASMA_DATA_GG [start=$c000]
+render_plasma_data(0.75,0.01,2,1,1,2) 
+.segment PLASMA_DATA_HH [start=$c000]
+render_plasma_data(1,0.5,1,0,3,1)
+.segment PLASMA_DATA_II [start=$c000]
+render_plasma_data(0.25,0.75,0,1,1,0)
+.segment PLASMA_DATA_JJ [start=$c000]
+render_plasma_data(0.4,0.5,1,2,3,1)
+.segment PLASMA_DATA_KK [start=$c000]
+render_plasma_data(0.25,0.15,7,2,1,0)
+.segment PLASMA_DATA_LL [start=$c000]
+render_plasma_data(1,0.75,1,0,0,1)
+.segment PLASMA_DATA_MM [start=$c000]
+render_plasma_data(0.25,1,1,0,1,1) 
+.segment PLASMA_DATA_NN [start=$c000]
+render_plasma_data(0.5, 1,1,0,2,1)
+.segment PLASMA_DATA_OO [start=$c000]
+render_plasma_data(0.5, 0.5,1,2,254,1)
+.segment PLASMA_DATA_PP [start=$c000]
+render_plasma_data(0.5, 0.5, 1,128,0,1)
+.segment PLASMA_DATA_QQ [start=$c000]
+render_plasma_data(0.25, 0.25, 1,3,3,1)
+.segment PLASMA_DATA_RR [start=$c000]
+render_plasma_data(0.1, 0.1, 1,10,0,1)
+.segment PLASMA_DATA_SS [start=$c000]
+render_plasma_data(0.75, 0.25, 1,0,0,1)
+.segment PLASMA_DATA_TT [start=$c000]
+render_plasma_data(1, 0.25, 0,1,1,0)
+.segment PLASMA_DATA_UU [start=$c000]
+render_plasma_data(0.25, 0.4, 5,4,3,2)
+.segment PLASMA_DATA_VV [start=$c000]
+render_plasma_data(0.5, 0.5, 1,0,2,1)
+.segment PLASMA_DATA_WW [start=$c000]
+render_plasma_data(0.6, 0.5, 1,2,4,1)
+.segment PLASMA_DATA_XX [start=$c000]
+render_plasma_data(0.25, 0.3, 1,255,1,255)
+.segment PLASMA_DATA_YY [start=$c000]
+render_plasma_data(0.25, 0.4, 1,2,2,1)
+.segment PLASMA_DATA_ZZ [start=$c000]
+render_plasma_data(0.5, 0.5, 1,3,2,1)
 
 
-/*
-.segment PLASMA_TABLES2 [start=$c000]
-render_plasma_tables(46,256,34,128)
-.segment PLASMA_TABLES3 [start=$c000]
-render_plasma_tables(5,64,7,64)
-.segment PLASMA_TABLES4 [start=$c000]
-render_plasma_tables(64,255,64,255)
-.segment PLASMA_TABLES5 [start=$c000]
-render_plasma_tables(32,128,16,128)
-.segment PLASMA_TABLES6 [start=$c000]
-render_plasma_tables(16,64,24,32)
-.segment PLASMA_TABLES7 [start=$c000]
-render_plasma_tables(36,255,24,128)
-.segment PLASMA_TABLES8 [start=$c000]
-render_plasma_tables(1,64,255,128)
-.segment PLASMA_TABLES9 [start=$c000]
-render_plasma_tables(255,255,255,255)
-.segment PLASMA_TABLESa [start=$c000]
-render_plasma_tables(127,127,127,127)
-.segment PLASMA_TABLESb [start=$c000]
-render_plasma_tables(8,128,9,128)
-.segment PLASMA_TABLESc [start=$c000]
-render_plasma_tables(25,127,29,128) //todo update this data
-.segment PLASMA_TABLESd [start=$c000]
-render_plasma_tables(25,64,14,128)
-.segment PLASMA_TABLESe [start=$c000]
-render_plasma_tables(25,64,14,128)
-.segment PLASMA_TABLESf [start=$c000]
-render_plasma_tables(25,64,14,128)
-
-*/

@@ -71,12 +71,15 @@ funcScrollSpriteNewChar:
 	rts
 
 SCROLLTEXT:
-.text "welcome back! after a couple of years its time for version 2 of the plasmatoy..."
-.text " f1/f2 to change the zoom, f3/f4 to change x speed, f5/f6 to change y speed, f7/f8 to choose pretty presets -"
-.text " use number keys 1-8 to change plasma colors - shift 1-8 to decrement.  this spicy version of plasmatoy has 80% more colors"
-.text " with that smooth ecm plasma taste you have come to expect..." 
-.text " credits: code by zig and voltage of defame during syntax party 2020. music is 'run mild' by coax of topaz beerline. "
-.text " ...if you would like to get in touch, send an email to: joe@pixolut.com ... greets need to go out to: "
+.text "welcome back! after a couple of years its time for version 2 of plasmatoy..."
+.text " f1/f2 to change the zoom, f3/f4 to change x speed, f5/f6 to change y speed -"
+.text " use number keys 1-8 to change plasma colors - use letters a-z to load plasma presets. "
+.text " credits: code started by zig and voltage of defame during syntax party 2020. "
+.text " and continued over the following weeks when zig had a minute or"
+.text " needed to hide from too much human contact during christmas."
+.text " music is 'run mild' by coax of topaz beerline. one of my all time favorite songs... "
+.text " ...if you would like to swap, send an email to: joe@pixolut.com ...virtual stamps back."
+.text "... aussie greets need to go out to these legends: "
 .text "chrome, "
 .text "disaster area, "
 .text "digital access, "
@@ -89,7 +92,7 @@ SCROLLTEXT:
 .text "0f.digital, "
 .text "aday, "
 .text "onslaught, "
-.text " ...and the international greets..."
+.text " ...and the international greets on behalf of the rest of the defame crew..."
 .text "abyss connection, "
 .text "amnesty, "
 .text "artstate, "
@@ -151,4 +154,5 @@ SCROLLTEXT:
 .text "viruz, "
 .text "wrath, "
 .text "x-ample ...    "
+.text " thats a wrap!                              "
 .byte $ff
