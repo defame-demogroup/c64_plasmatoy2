@@ -1,14 +1,10 @@
-# c64_plasmatoy
+# c64_plasmatoy2
 
-This is a release version of the 1.0 Plasmatoy released at Syntax 2018 https://csdb.dk/release/?id=171349
+This is a release version of the 2.0 Plasmatoy released at the end of 2020
+![Screen Shot](https://csdb.dk/gfx/releases/198000/198516.png)
 
-
-Use function keys to change effects
-
-Original ideas and some code examples by Conjuror from a Flashback party many years ago. Many changes by me.
-
-
-Plasmatoy was written during Syntax 2018 party with the Defame and Onslaught crew for moral support :)
+Download the release from https://csdb.dk/release/index.php?id=198516
+There is a long description in the note attached to the release...
 
 (written for Kick Assembler)
  
